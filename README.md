@@ -1,39 +1,103 @@
 # OnlineAfspraken slots MCP
 
-This local, read-only MCP server exposes
-`get_available_slots(booking_page, date_iso, room)`. Pass a public HTTPS page
-that embeds an OnlineAfspraken booking widget, or pass a direct widget URL.
+Read available slots from a public OnlineAfspraken widget URL without an account.
+This local MCP server reads availability only; it cannot make a booking.
 
-The server discovers the widget key and appointment type IDs from the widget
-URL, fetches their current names, then reads available times. It does not book
-appointments or require account credentials. Dates default to today in
-Europe/Amsterdam; `room` optionally filters by part of an appointment type
-name.
+## Get started
 
-## Setup
+You need Python 3.10 or newer and an MCP client. The commands below use a Unix
+shell (macOS or Linux).
 
-This copy is already set up on this Mac. If moving it to another computer,
-run `sh setup.sh` from this directory to install the Python MCP SDK into
-`.venv`.
+1. Download or clone this repository.
+2. In its directory, install the Python dependency:
 
-## Connect to Codex
+   ```sh
+   sh setup.sh
+   ```
 
-This copy is already registered in Codex as `onlineafspraken-slots`.
-If you move the directory, update the registration with:
+3. Register the server with your MCP client using one of the examples below.
+   Replace `/absolute/path/to/onlineafspraken-slots` with the full path to your
+   downloaded copy.
+4. Start a new chat and provide a public OnlineAfspraken widget URL. For
+   example: “Show today's available times for this widget: [paste the full
+   widget URL here].”
+
+You can also pass the URL of a public booking page that embeds one
+OnlineAfspraken widget. If the page has several widgets, use the direct URL of
+the one you want.
+
+## Connect your MCP client
+
+### Codex
 
 ```sh
-codex mcp remove onlineafspraken-slots
 codex mcp add onlineafspraken-slots -- /absolute/path/to/onlineafspraken-slots/run.sh
 codex mcp list
 ```
 
-Replace the path with the full path to this directory. Start a new Codex chat
-to use the newly registered tool, then ask for slots at a public
-OnlineAfspraken booking page on a date.
+### Claude Code
+
+```sh
+claude mcp add --scope user --transport stdio onlineafspraken-slots -- /absolute/path/to/onlineafspraken-slots/run.sh
+claude mcp list
+```
+
+The user scope makes the server available in all your Claude Code projects.
+See the [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+for other scopes.
+
+### Claude Desktop
+
+Add this entry under `mcpServers` in your Claude Desktop configuration, then
+restart Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "onlineafspraken-slots": {
+      "command": "/absolute/path/to/onlineafspraken-slots/run.sh"
+    }
+  }
+}
+```
+
+If you already have an `mcpServers` object, add just the
+`onlineafspraken-slots` entry to it. The [Claude Desktop local server
+guide](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop)
+explains where to manage local servers and check their connection status.
+
+### OpenCode
+
+```sh
+opencode mcp add onlineafspraken-slots --global -- /absolute/path/to/onlineafspraken-slots/run.sh
+opencode mcp list
+```
+
+The global option makes the server available in every OpenCode project. See
+the [OpenCode MCP documentation](https://opencode.ai/v2/docs/mcp-servers) for
+project-specific configuration.
+
+## Tool inputs
+
+The server exposes `get_available_slots`:
+
+| Input | Required | Meaning |
+| --- | --- | --- |
+| `booking_page` | Yes | Full HTTPS URL of a public OnlineAfspraken widget or a page that embeds it. |
+| `date_iso` | No | Date in `YYYY-MM-DD` format. Defaults to today in Europe/Amsterdam. |
+| `room` | No | Part of an appointment type name to filter the results. |
+
+Results include the appointment type names, available start times, date,
+timezone, and the time the availability was checked. The `room` input is named
+for the original use case; it works with any appointment type.
 
 ## Limitations
 
-The server uses the widget's public, undocumented read endpoint. If the
-provider changes that endpoint or the widget URL format, this server may need
-updating. Booking pages must expose the widget URL in a script, iframe, or
-link in their HTML. Availability can change between lookup and booking.
+The server uses the widget's public, undocumented read endpoint. A provider
+change may require an update. A booking page must expose its widget URL in a
+script, iframe, or link for automatic discovery. Available slots can change
+between lookup and booking.
+
+## License
+
+[MIT](LICENSE)
