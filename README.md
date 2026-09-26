@@ -111,15 +111,24 @@ between lookup and booking.
 ## Publishing a release
 
 For maintainers: keep the version in `pyproject.toml` and `server.json` in
-sync. Build and inspect the distribution, then publish it to PyPI before
-publishing the MCP Registry listing:
+sync. To publish the first release, [configure a pending PyPI trusted
+publisher](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/)
+with these values:
+
+| PyPI field | Value |
+| --- | --- |
+| PyPI project name | `onlineafspraken-slots-mcp` |
+| Owner | `RichieB2B` |
+| Repository | `onlineafspraken-slots-mcp` |
+| Workflow | `publish-pypi.yml` |
+| Environment | `pypi` |
+
+Then publish a GitHub release tagged `v0.1.0`. The
+[release workflow](.github/workflows/publish-pypi.yml) builds and checks the
+distributions and uploads them to PyPI through trusted publishing. After the
+PyPI package is available, publish its MCP Registry listing:
 
 ```sh
-sh setup.sh
-.venv/bin/python -m pip install build twine
-.venv/bin/python -m build
-.venv/bin/python -m twine check dist/*
-.venv/bin/python -m twine upload dist/*
 mcp-publisher validate
 mcp-publisher login github
 mcp-publisher publish
@@ -128,4 +137,3 @@ mcp-publisher publish
 The [official MCP Registry guide](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/quickstart.mdx)
 explains publisher installation and GitHub authentication. The registry checks
 the `mcp-name` marker above against the README included in the PyPI release.
-PyPI upload requires your PyPI credentials or a configured trusted publisher.
