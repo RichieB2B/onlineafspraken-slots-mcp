@@ -125,15 +125,9 @@ with these values:
 
 Then publish a GitHub release tagged `v0.1.0`. The
 [release workflow](.github/workflows/publish-pypi.yml) builds and checks the
-distributions and uploads them to PyPI through trusted publishing. After the
-PyPI package is available, publish its MCP Registry listing:
-
-```sh
-mcp-publisher validate
-mcp-publisher login github
-mcp-publisher publish
-```
+distributions, uploads them to PyPI through trusted publishing, and publishes
+the matching version to the official MCP Registry through GitHub OIDC.
 
 The [official MCP Registry guide](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/quickstart.mdx)
-explains publisher installation and GitHub authentication. The registry checks
-the `mcp-name` marker above against the README included in the PyPI release.
+explains the publishing process. The registry checks the `mcp-name` marker
+above against the README included in the PyPI release.
