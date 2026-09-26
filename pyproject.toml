@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onlineafspraken-slots-mcp"
+version = "0.1.0"
+description = "Read available slots from a public OnlineAfspraken widget URL without an account."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Richard van den Berg"}]
+dependencies = ["mcp>=1.26,<2"]
+keywords = ["mcp", "onlineafspraken", "booking", "availability"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Office/Business :: Scheduling",
+]
+
+[project.urls]
+Homepage = "https://github.com/RichieB2B/onlineafspraken-slots-mcp"
+Repository = "https://github.com/RichieB2B/onlineafspraken-slots-mcp"
+Issues = "https://github.com/RichieB2B/onlineafspraken-slots-mcp/issues"
+
+[project.scripts]
+onlineafspraken-slots-mcp = "onlineafspraken_slots_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

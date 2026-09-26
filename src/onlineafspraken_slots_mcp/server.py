@@ -242,5 +242,10 @@ def get_available_slots(booking_page: str, date_iso: str | None = None, room: st
     return result
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Start the MCP server over stdio."""
     SERVER.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()

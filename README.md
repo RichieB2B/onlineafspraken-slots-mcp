@@ -1,5 +1,7 @@
 # OnlineAfspraken slots MCP
 
+<!-- mcp-name: io.github.RichieB2B/onlineafspraken-slots -->
+
 Read available slots from a public OnlineAfspraken widget URL without an account.
 This local MCP server reads availability only; it cannot make a booking.
 
@@ -9,15 +11,15 @@ You need Python 3.10 or newer and an MCP client. The commands below use a Unix
 shell (macOS or Linux).
 
 1. Download or clone this repository.
-2. In its directory, install the Python dependency:
+2. In its directory, install the package and its dependencies:
 
    ```sh
    sh setup.sh
    ```
 
 3. Register the server with your MCP client using one of the examples below.
-   Replace `/absolute/path/to/onlineafspraken-slots` with the full path to your
-   downloaded copy.
+   Replace `/absolute/path/to/onlineafspraken-slots-mcp` with the full path to
+   your downloaded copy.
 4. Start a new chat and provide a public OnlineAfspraken widget URL. For
    example: “Show today's available times for this widget: [paste the full
    widget URL here].”
@@ -31,14 +33,14 @@ the one you want.
 ### Codex
 
 ```sh
-codex mcp add onlineafspraken-slots -- /absolute/path/to/onlineafspraken-slots/run.sh
+codex mcp add onlineafspraken-slots -- /absolute/path/to/onlineafspraken-slots-mcp/run.sh
 codex mcp list
 ```
 
 ### Claude Code
 
 ```sh
-claude mcp add --scope user --transport stdio onlineafspraken-slots -- /absolute/path/to/onlineafspraken-slots/run.sh
+claude mcp add --scope user --transport stdio onlineafspraken-slots -- /absolute/path/to/onlineafspraken-slots-mcp/run.sh
 claude mcp list
 ```
 
@@ -55,7 +57,7 @@ restart Claude Desktop:
 {
   "mcpServers": {
     "onlineafspraken-slots": {
-      "command": "/absolute/path/to/onlineafspraken-slots/run.sh"
+      "command": "/absolute/path/to/onlineafspraken-slots-mcp/run.sh"
     }
   }
 }
@@ -69,13 +71,17 @@ explains where to manage local servers and check their connection status.
 ### OpenCode
 
 ```sh
-opencode mcp add onlineafspraken-slots --global -- /absolute/path/to/onlineafspraken-slots/run.sh
+opencode mcp add onlineafspraken-slots --global -- /absolute/path/to/onlineafspraken-slots-mcp/run.sh
 opencode mcp list
 ```
 
 The global option makes the server available in every OpenCode project. See
 the [OpenCode MCP documentation](https://opencode.ai/v2/docs/mcp-servers) for
 project-specific configuration.
+
+After the first PyPI release, clients that support a package runner can launch
+the `onlineafspraken-slots-mcp` command from that package instead of using a
+local checkout.
 
 ## Tool inputs
 
@@ -101,3 +107,25 @@ between lookup and booking.
 ## License
 
 [MIT](LICENSE)
+
+## Publishing a release
+
+For maintainers: keep the version in `pyproject.toml` and `server.json` in
+sync. Build and inspect the distribution, then publish it to PyPI before
+publishing the MCP Registry listing:
+
+```sh
+sh setup.sh
+.venv/bin/python -m pip install build twine
+.venv/bin/python -m build
+.venv/bin/python -m twine check dist/*
+.venv/bin/python -m twine upload dist/*
+mcp-publisher validate
+mcp-publisher login github
+mcp-publisher publish
+```
+
+The [official MCP Registry guide](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/quickstart.mdx)
+explains publisher installation and GitHub authentication. The registry checks
+the `mcp-name` marker above against the README included in the PyPI release.
+PyPI upload requires your PyPI credentials or a configured trusted publisher.

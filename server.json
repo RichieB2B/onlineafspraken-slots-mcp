@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.RichieB2B/onlineafspraken-slots",
+  "title": "OnlineAfspraken Slots",
+  "description": "Read available slots from a public OnlineAfspraken widget URL without an account.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/RichieB2B/onlineafspraken-slots-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "onlineafspraken-slots-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {"type": "stdio"}
+    }
+  ]
+}
